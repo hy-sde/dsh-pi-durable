@@ -1,3 +1,9 @@
+<!-- MIRROR-NOTE:START -->
+> [!NOTE]
+> 📦 This plugin lives in the [**dsh-plugins**](https://github.com/hy-sde/dsh-plugins) monorepo — file issues & pull requests there.
+> npm: [`@hy-sde-org/dsh-pi-durable`](https://www.npmjs.com/package/@hy-sde-org/dsh-pi-durable) · [`@hy-sde-org/dsh-tool-pi-durable`](https://www.npmjs.com/package/@hy-sde-org/dsh-tool-pi-durable)
+<!-- MIRROR-NOTE:END -->
+
 # dsh-pi-durable
 
 Durable-agent capability for the DeepSeek Harness, delivered as two standalone

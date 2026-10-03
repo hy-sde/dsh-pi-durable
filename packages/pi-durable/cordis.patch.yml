@@ -1,0 +1,30 @@
+# @hy-sde-org/dsh-pi-durable — the durable-agent engine, delivered as ONE
+# self-contained host-plane row.
+#
+# The plugin publishes the `piDurableAgent` service (a Harness over
+# ~/.dsh/storages/pi-agent.sqlite with an OpenAI-compatible relay provider).
+# It injects nothing from the host: pi-durable owns its storage medium, so the
+# row sits at HOST plane (a durable process-wide service), not inside a preset.
+# The model-facing tools live in @hy-sde-org/dsh-tool-pi-durable and resolve
+# this service by name from any agent preset.
+#
+# All row ids carry the `hy-sde-` prefix to avoid clashing with any shipped
+# row of the same name (a duplicate loader id fails the boot).
+#
+# `baseUrl` left unset starts the engine in WRITE-ONLY mode: durable writes,
+# documents, and tasks work, but `input` submissions fail with a config error
+# naming this knob. Point `baseUrl` at any OpenAI-compatible endpoint and set
+# `apiKeyEnv` (default PI_DURABLE_API_KEY) to enable generation.
+#
+# Override per deployment by patching the row by id:
+#
+#   - id: hy-sde-pi-durable
+#     config:
+#       path: /var/lib/dsh/pi-agent.sqlite
+#       baseUrl: https://relay.internal/v1
+#       apiKeyEnv: MY_RELAY_KEY
+#       modelId: my-model
+- insert:
+    - id: hy-sde-pi-durable
+      name: '@hy-sde-org/dsh-pi-durable'
+      config: {}

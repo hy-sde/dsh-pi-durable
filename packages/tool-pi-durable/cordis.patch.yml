@@ -1,0 +1,20 @@
+# @hy-sde-org/dsh-tool-pi-durable — model-facing durable-agent tools,
+# delivered as ONE self-contained preset row.
+#
+# The tools resolve the `piDurableAgent` service published by the
+# @hy-sde-org/dsh-pi-durable engine row (HOST plane). Without that service the
+# tools still mount and every call fails loud with `[pi-durable-unavailable]`
+# — mounting a preset must never break session creation over an optional host.
+#
+# All row ids carry the `hy-sde-` prefix to avoid clashing with any shipped
+# row of the same name (a duplicate loader id fails the boot).
+#
+# Override per deployment by patching the row by id:
+#
+#   - id: hy-sde-tool-pi-durable
+#     config:
+#       enabled: false
+- insert:
+    - id: hy-sde-tool-pi-durable
+      name: '@hy-sde-org/dsh-tool-pi-durable'
+      config: {}

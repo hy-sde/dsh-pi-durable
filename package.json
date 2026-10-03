@@ -1,0 +1,31 @@
+{
+  "name": "dsh-pi-durable",
+  "version": "0.2.0-rc.2",
+  "private": true,
+  "description": "Standalone public packages: @hy-sde-org/dsh-pi-durable (the durable-agent engine over @earendil-works/pi-durable) and @hy-sde-org/dsh-tool-pi-durable (its model-facing tools) for DeepSeek Harness.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "scripts": {
+    "build": "pnpm -r --filter './packages/*' build",
+    "check": "pnpm -r --filter './packages/*' check",
+    "test": "pnpm -r --filter './packages/*' test",
+    "pack:all": "pnpm -r --filter './packages/*' pack"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "~4.0.4",
+    "@types/node": "^24.13.3",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.7"
+  },
+  "keywords": [
+    "deepseek",
+    "agent",
+    "harness",
+    "dsh-plugin",
+    "pi-durable",
+    "durable",
+    "agent-harness"
+  ]
+}

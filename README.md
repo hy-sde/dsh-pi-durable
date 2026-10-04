@@ -76,9 +76,9 @@ dsh plugin --profile web add @hy-sde-org/dsh-pi-durable @hy-sde-org/dsh-tool-pi-
 git clone git@github.com:hy-sde/dsh-plugins.git
 cd dsh-plugins
 pnpm install
-PI_DURABLE_TGZ="$(cd dsh-pi-durable/packages/pi-durable && pnpm pack --silent)"
-TOOL_PI_DURABLE_TGZ="$(cd dsh-pi-durable/packages/tool-pi-durable && pnpm pack --silent)"
-dsh plugin --profile web add "dsh-pi-durable/packages/pi-durable/$PI_DURABLE_TGZ" "dsh-pi-durable/packages/tool-pi-durable/$TOOL_PI_DURABLE_TGZ"
+PI_DURABLE_TGZ="$(cd dsh-pi-durable/packages/pi-durable && pnpm pack --pack-destination /tmp | tail -n 1)"
+TOOL_PI_DURABLE_TGZ="$(cd dsh-pi-durable/packages/tool-pi-durable && pnpm pack --pack-destination /tmp | tail -n 1)"
+dsh plugin --profile web add "$PI_DURABLE_TGZ" "$TOOL_PI_DURABLE_TGZ"
 ```
 
 `pnpm pack` runs the normal `prepack` build and produces tarballs containing

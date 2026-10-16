@@ -1,6 +1,6 @@
 {
   "name": "@hy-sde-org/dsh-pi-durable",
-  "version": "0.2.1-alpha.2",
+  "version": "0.2.1-alpha.4",
   "description": "The durable-agent engine for DeepSeek Harness: a host-plane cordis service mounting @earendil-works/pi-durable (conversations, exactly-once submissions, fork-at-entry, tasks) over a SQLite storage backend with an OpenAI-compatible relay provider.",
   "type": "module",
   "main": "./dist/index.js",

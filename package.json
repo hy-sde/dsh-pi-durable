@@ -14,7 +14,7 @@
     "pack:all": "pnpm -r --filter './packages/*' pack"
   },
   "devDependencies": {
-    "@deepseek-ai/cordis": "~4.0.5-alpha.1",
+    "@deepseek-ai/cordis": "~4.0.5-alpha.2",
     "@types/node": "^24.13.3",
     "typescript": "^5.9.3",
     "vitest": "^3.2.7"

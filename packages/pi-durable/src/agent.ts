@@ -31,7 +31,7 @@ import { CodingTools } from '@earendil-works/pi-durable/tools'
 import { openNodeSqliteStorage } from '@earendil-works/pi-durable/storage/sqlite/node'
 import { NodeExecutionEnv } from '@earendil-works/pi-durable/env/node'
 import type { ResolvedPiDurableConfig } from './config.ts'
-import { createRelayProvider } from './provider.ts'
+import { createRelayProvider, type RelayProviderOptions } from './provider.ts'
 
 /** Result of admitting one root submission. */
 export interface RootSubmissionOutcome {
@@ -58,7 +58,10 @@ export class PiDurableAgent {
   private harness: Harness | undefined
   private rootPromise: Promise<Conversation> | undefined
 
-  constructor(private readonly config: ResolvedPiDurableConfig) {
+  constructor(
+    private readonly config: ResolvedPiDurableConfig,
+    private readonly options: RelayProviderOptions = {},
+  ) {
     this.openPromise = this.open()
   }
 
@@ -66,7 +69,7 @@ export class PiDurableAgent {
     const storage = await openNodeSqliteStorage(this.config.path, { busyTimeoutMs: BUSY_TIMEOUT_MS })
     const models = createModels()
     if (this.config.baseUrl !== undefined) {
-      models.setProvider(createRelayProvider(this.config))
+      models.setProvider(createRelayProvider(this.config, this.options))
     }
     const harness = await Harness.open(storage, {
       models,

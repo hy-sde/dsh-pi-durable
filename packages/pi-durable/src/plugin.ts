@@ -10,6 +10,7 @@ import type { Context } from '@deepseek-ai/cordis'
 import z from '@deepseek-ai/schemastery'
 import { PiDurableAgent } from './agent.ts'
 import { resolvePiDurableConfig, type PiDurablePluginConfig } from './config.ts'
+import type { CredentialStoreView } from './provider.ts'
 
 /** Name of the published service (consumed by @hy-sde-org/dsh-tool-pi-durable). */
 export const SERVICE_PI_DURABLE = 'piDurableAgent'
@@ -50,6 +51,22 @@ export const Config: z<Config> = z.object({
 })
 
 /**
+ * Resolve the harness credentials service opportunistically: absent in
+ * deployments without it (the resolver then yields undefined and the env
+ * fallback applies). Looked up lazily at request time, so mount order
+ * against the credentials row does not matter.
+ */
+function resolveStoredCredentialFactory(ctx: Context): (ref: string) => Promise<string | undefined> {
+  return async (ref) => {
+    const credentials = (ctx as unknown as { get(key: string): unknown }).get('credentials') as
+      | CredentialStoreView
+      | undefined
+    if (credentials === undefined || typeof credentials.resolve !== 'function') return undefined
+    return (await credentials.resolve(ref))?.value
+  }
+}
+
+/**
  * Provide the engine facade and tie its teardown to the plugin fiber, so an
  * unload (HMR included) closes the harness and storage with it.
  * @param ctx - host-plane plugin context.
@@ -57,7 +74,7 @@ export const Config: z<Config> = z.object({
  */
 export function apply(ctx: Context, config: Config): void {
   const resolved = resolvePiDurableConfig(config)
-  const agent = new PiDurableAgent(resolved)
+  const agent = new PiDurableAgent(resolved, { resolveStoredCredential: resolveStoredCredentialFactory(ctx) })
   ctx.provide(SERVICE_PI_DURABLE, agent)
   ctx.effect(() => async () => {
     await agent.close()

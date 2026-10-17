@@ -1,7 +1,8 @@
 /**
  * The OpenAI-compatible relay provider registered into the pi-ai model
- * registry. Auth resolves lazily at request time from the configured env
- * variable (or inline key), so rotating the secret needs no remount.
+ * registry. Auth resolves lazily at request time — the harness credential
+ * store first (when available), then the row's inline key, then the
+ * configured env variable — so rotating the secret needs no remount.
  * @module
  */
 
@@ -17,14 +18,33 @@ import { openAIResponsesApi } from '@earendil-works/pi-ai/api/openai-responses.l
 import type { ResolvedPiDurableConfig } from './config.ts'
 
 /**
- * An {@link ApiKeyAuth} that resolves from config/env at request time. No
- * credential store is consulted: the row's env var is the single source.
+ * Minimal structural view of the harness credentials service — resolved
+ * opportunistically so deployments without it keep working (env fallback).
  */
-function configApiKeyAuth(name: string, resolve: () => string | undefined): ApiKeyAuth {
+export interface CredentialStoreView {
+  resolve(ref: string): Promise<{ value: string } | undefined>
+}
+
+/** Optional wiring for {@link createRelayProvider}. */
+export interface RelayProviderOptions {
+  /**
+   * Resolves a stored credential by reference (the harness credentials
+   * service). Consulted before the inline key and the environment, matching
+   * the stored-credential precedence of the fork's llm-pi-ai route.
+   */
+  resolveStoredCredential?: (ref: string) => Promise<string | undefined>
+}
+
+/**
+ * An {@link ApiKeyAuth} that resolves at request time: stored credential
+ * first, then the row's inline key, then the configured env variable — so
+ * rotating the secret needs no remount.
+ */
+function configApiKeyAuth(name: string, resolve: () => Promise<string | undefined>): ApiKeyAuth {
   return {
     name,
     async resolve() {
-      const key = resolve()
+      const key = await resolve()
       if (key === undefined || key === '') return undefined
       return { auth: { apiKey: key }, source: name }
     },
@@ -32,7 +52,7 @@ function configApiKeyAuth(name: string, resolve: () => string | undefined): ApiK
 }
 
 /** Build the relay provider from resolved config (only called with a `baseUrl`). */
-export function createRelayProvider(config: ResolvedPiDurableConfig): Provider<Api> {
+export function createRelayProvider(config: ResolvedPiDurableConfig, options: RelayProviderOptions = {}): Provider<Api> {
   if (config.baseUrl === undefined) {
     throw new Error('[pi-durable-not-configured] createRelayProvider requires a baseUrl')
   }
@@ -53,10 +73,11 @@ export function createRelayProvider(config: ResolvedPiDurableConfig): Provider<A
     name: config.providerName,
     baseUrl: config.baseUrl,
     auth: {
-      apiKey: configApiKeyAuth(
-        `${config.providerName} API key`,
-        () => config.apiKey ?? process.env[config.apiKeyEnv],
-      ),
+      apiKey: configApiKeyAuth(`${config.providerName} API key`, async () => {
+        const stored = await options.resolveStoredCredential?.(config.apiKeyEnv)
+        if (stored !== undefined && stored !== '') return stored
+        return config.apiKey ?? process.env[config.apiKeyEnv]
+      }),
     },
     models: [model],
     api: config.api === 'openai-responses' ? openAIResponsesApi() : openAICompletionsApi(),

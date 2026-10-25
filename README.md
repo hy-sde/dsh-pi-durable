@@ -191,7 +191,7 @@ dependency to the fork's `apps/cli/package.json`:
 | --- | --- |
 | Node.js | `^22.19.0 \|\| >=24.0.0` (`engines.node`) |
 | DeepSeek Harness | `0.2.0-rc.2` peer range (`@deepseek-ai/cordis ~4.0.4`, `@deepseek-ai/dsh-tools ^0.2.0-rc.2`) |
-| Upstream runtime | `@earendil-works/pi-durable`, `@earendil-works/pi-ai`, `@earendil-works/chord` `^1.0.0` — regular npm dependencies, unmodified |
+| Upstream runtime | `@earendil-works/pi-durable`, `@earendil-works/pi-ai`, `@earendil-works/chord` pinned `1.4.0` (upstream v1.4.0, schema-v2 SQLite store) — regular npm dependencies, unmodified |
 | Storage | pi-durable owns its SQLite medium — default `~/.dsh/storages/pi-agent.sqlite`, overridable via the row's `path` |
 
 Upstream seam-contract changes require a new package release and contract

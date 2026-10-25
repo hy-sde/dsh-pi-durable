@@ -1,6 +1,6 @@
 {
   "name": "@hy-sde-org/dsh-pi-durable",
-  "version": "0.2.1-alpha.4",
+  "version": "0.2.1-rc.3",
   "description": "The durable-agent engine for DeepSeek Harness: a host-plane cordis service mounting @earendil-works/pi-durable (conversations, exactly-once submissions, fork-at-entry, tasks) over a SQLite storage backend with an OpenAI-compatible relay provider.",
   "type": "module",
   "main": "./dist/index.js",
@@ -44,17 +44,17 @@
     }
   },
   "dependencies": {
-    "@deepseek-ai/schemastery": "~3.18.4",
+    "@deepseek-ai/schemastery": "~3.18.5",
     "@earendil-works/chord": "^1.0.0",
     "@earendil-works/pi-ai": "^1.0.0",
     "@earendil-works/pi-durable": "^1.0.0"
   },
   "peerDependencies": {
-    "@deepseek-ai/cordis": "~4.0.5-alpha.2"
+    "@deepseek-ai/cordis": "~4.0.5"
   },
   "devDependencies": {
-    "@deepseek-ai/cordis": "~4.0.5-alpha.2",
-    "@deepseek-ai/schemastery": "~3.18.4",
+    "@deepseek-ai/cordis": "~4.0.5",
+    "@deepseek-ai/schemastery": "~3.18.5",
     "@types/node": "^24.13.3",
     "typescript": "^5.9.3",
     "vitest": "^3.2.7"
